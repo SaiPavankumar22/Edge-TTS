@@ -53,22 +53,17 @@ async def text_to_speech(text, output_path="responses/response.mp3"):
 async def text_to_speech_route(request: TextToSpeechRequest):
     logger.info("Received text-to-speech request")
     try:
-        # Get the text from the request
         text = request.text
 
-        # Check if text is provided
         if not text:
             logger.error("No text provided")
             raise HTTPException(status_code=400, detail="No text provided")
 
-        # Generate a unique filename
         output_filename = f"response_{int(time.time())}.mp3"
         output_path = os.path.join(OUTPUT_FOLDER, output_filename)
 
-        # Convert text to speech
         await text_to_speech(text, output_path)
 
-        # Return the speech file
         return FileResponse(output_path, media_type='audio/mpeg')
     except Exception as e:
         logger.error(f"Error processing text-to-speech request: {str(e)}", exc_info=True)
