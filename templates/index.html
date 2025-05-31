@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text-to-Speech</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #text-input {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        #submit-button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #submit-button:hover {
+            background-color: #3e8e41;
+        }
+
+        #audio-player {
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Text-to-Speech</h1>
+        <form id="text-to-speech-form">
+            <textarea id="text-input" placeholder="Enter text here..."></textarea>
+            <button id="submit-button">Convert to Speech</button>
+        </form>
+        <audio id="audio-player" controls></audio>
+    </div>
+</body>
+<script>
+    const form = document.getElementById('text-to-speech-form');
+    const textInput = document.getElementById('text-input');
+    const submitButton = document.getElementById('submit-button');
+    const audioPlayer = document.getElementById('audio-player');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const text = textInput.value.trim();
+        if (text) {
+            try {
+                const response = await fetch('/text_to_speech', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text }),
+                });
+                const audioFile = await response.blob();
+                audioPlayer.src = URL.createObjectURL(audioFile);
+                audioPlayer.play();
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    });
+</script>
+
+</html>
